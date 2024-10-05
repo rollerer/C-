@@ -1,6 +1,6 @@
 #include <iostream>
 
-class Time
+/*class Time
 {
 private:
     int hours{};
@@ -17,7 +17,7 @@ public:
         minutes = m;
         seconds = s;
     };
-};
+};*/
 
 class Student
 {
@@ -46,6 +46,14 @@ void print()
     std::cout<<"Student's time: "<<time_student<<" hours"<<'\n';
     std::cout<<"Money: "<<money<<'\n';
 };
+void print_r()
+{
+    std::cout<<"\nProgress: "<<Progress<<'\n';
+    std::cout<<"Mental health: "<<mental_health<<'\n';
+    std::cout<<"Energy: "<<energy<<'\n';
+    std::cout<<"Student's time: "<<time_student<<" hours"<<'\n';
+    std::cout<<"Money: "<<money<<'\n';
+}
     float show_time()
     {
         return time_student;
@@ -75,68 +83,72 @@ void print()
     Student(std::string G) : Student(G, 19) {}
     void Eat()
     {
-        if(money>20, time_student>0.4)
-        {
-            money -= 20;
-            energy += 20;
+        if(money>20 and time_student > 0.4)
+        {   
+            money -= 45;
+            energy += 25;
             time_student -= 0.4;
+            energy>100 ? energy = 100 : energy = energy;
         }
         else
         {
-            std::cout<<"erroe\n";
+            std::cout<<"error\n";
         }        
     }
     void Sleep(int t)
     {   
         if(time_student > t)
         {
-            energy += t*10;
-            mental_health += t*5;
+            energy += t*4;
+            mental_health += t*4;
             time_student -= t;
+            energy>100 ? energy = 100 : energy = energy;
+            mental_health > 100 ? mental_health = 100: mental_health = mental_health;
         }
         else
         {
-            std::cout<<"erroe\n";
+            std::cout<<"error\n";
         }      
     }
     void Botay(int t)
     {   
-        if(energy>t*4, mental_health>t*10, time_student>t)
+        if(time_student>t)
         {
-            energy -= t*4;
+            energy -= t*5;
             mental_health -= t*10;
             time_student -= t;
-            Progress += t*10;
+            Progress += t*2;
         }
         else
         {
-            std::cout<<"erroe\n";
+            std::cout<<"error\n";
         }        
     }
     void Work(int t)
     {   
-        if(energy > t*4, mental_health > t*10, time_student > t)
+        if(time_student > t)
         {
-            energy -= t*4;
-            mental_health -= t*10;
+            energy -= t*8;
+            mental_health -= t*8;
             time_student -= t;
             money += t*50;
         }        
         else
         {
-            std::cout<<"erroe\n";
+            std::cout<<"error\n";
         }
     }
     void Relax(int t)
     {       
         if(time_student > t)
         {
-            mental_health += t*5;
+            mental_health += t*8;
             time_student -= t;
+            mental_health > 100 ? mental_health = 100: mental_health = mental_health;
         }
         else
         {
-            std::cout<<"erroe\n";
+            std::cout<<"error\n";
         }    
     }
 };
@@ -148,14 +160,17 @@ main()
     int age;
     std::cin>>gr>>age;
     Student a(gr, age);
+    
     a.print();
-    printf("You have one week (24*7 hours) to solve homework\n");
+    printf("\nYou have one week (24*7 hours) to solve homework\n");
     printf("You can eat(write eat), sleep(write sleep time(float in hours)),\nwork(write work time(float in hours)), botat(write botay time(float in hours)),\nrelax(write relax time(float in hours)), if you want to see information write inf\n");
+    
     float t = a.show_time();
     int en = a.show_energy();
     int ment = a.show_mental();
     int prog = a.show_progress();
     std::string action;
+    
     while (t>0)
     {   
         std::cin>>action;
@@ -165,32 +180,41 @@ main()
         }
         else if(action == "inf")
         {
-            a.print();
+            a.print_r();
         }
         else
         {
             float tim;
             std::cin>>tim;
-            if(action == "sleep")
+            if (tim<=10)
             {
-                a.Sleep(tim);
-            }
-            else if(action == "work")
-            {
-                a.Work(tim);
-            }
-            else if(action == "botay")
-            {
-                a.Botay(tim);
-            }
-            else if(action == "relax")
-            {
-                a.Relax(tim);
+                if(action == "sleep")
+                {
+                    a.Sleep(tim);
+                }
+                else if(action == "work")
+                {
+                    a.Work(tim);
+                }
+                else if(action == "botay")
+                {
+                    a.Botay(tim);
+                }
+                else if(action == "relax")
+                {
+                    a.Relax(tim);
+                }
+                else
+                {
+                    printf("Wrong input\n");
+                    action = "";
+                }
             }
             else
             {
-                printf("Wrong input");
+                printf("You can't do anything more than 10 hours.\n");
             }
+            
         }
         en = a.show_energy();
         ment = a.show_mental();
@@ -198,12 +222,12 @@ main()
         prog = a.show_progress();
         if(en<=0)
         {
-            printf("Ty skis...\n");
+            printf("\nenergy = 0\nTy skis...\n");
             break;
         }
         if(ment<=0)
         {
-            printf("\nTy stoish na krishe KPM, s golovy sorval veter tvoy kolpak...\n");
+            printf("\nmental health = 0\nTy stoish na krishe KPM, s golovy sorval veter tvoy kolpak...\n");
             break;
         }
         if(prog >= 100)
@@ -212,12 +236,12 @@ main()
         }
     }
     
-    if (prog<100, ment>0)
+    if (prog<100 and ment>0 and en>0)
     {
         printf("Tebya chislanuli(\n");
     }
-    else if (prog>=100)
+    else if (prog>=100 and ment>0 and en>0)
     {
-        printf("Pozdravlyau, ty sdal 1 iz 8 domashek\n");
+        printf("Pozdravlayu, ty sdal 1 iz 8 domashek\n");
     }    
 }
