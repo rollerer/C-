@@ -7,11 +7,11 @@ main() {
     int d = 2;
     double n = sqrt(number);
     while(d<=n){
-        if (number%d){
+        if (number%d == 0){
             std::cout<<number/d;
             return 0;
-    } 
-    d++;
+        } 
+        d++;
 }   
     std::cout<<number%5<<std::endl;
     std::cout<<"Prostoye";
