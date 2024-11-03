@@ -57,14 +57,14 @@ class DOGS: public Animals
             std::cout<<"GAF\n";
         }
         DOGS(std::string name_, int age_, std::string poroda_){
-            health = 100;
+            health = 88;
             name  = name_;
             age = age_;
             poroda = poroda_;
         }
         DOGS()
         {
-            health = 100;
+            health = 88;
             name  = "None";
             age = 0;
             poroda = "None";
@@ -79,6 +79,7 @@ class DOGS: public Animals
             std::cout<<health<<"\n";
         }
         friend class Vet;
+        friend class Hozyain;
 };
 
 
@@ -89,9 +90,9 @@ class Hozyain{
         int age;
         int N_cat;
         int N_dog;
-        DOGS dog;
         CATS** masive_of_cats;
     public:
+        DOGS dog;
         friend class Vet;
         Hozyain(std::string nn, std::string sn, int age__, int N_cat_, int N_dog_, DOGS d, CATS** c)
         {
@@ -129,17 +130,18 @@ class Vet{
     {
         fio = FIO{Name, Surname};
     }
-    void medosmotr(Hozyain hoz)
+    void medosmotr(Hozyain* hoz)
     {   
-        if (hoz.dog.health < 100)
+        if (hoz->dog.health < 100)
         {
-        hoz.dog.health += 10;
+        std::cout<<"sda\n";
+        hoz->dog.health += 10;
         }
-        for (int i = 0; i<hoz.N_cat; i++)
+        for (int i = 0; i<hoz->N_cat; i++)
         {   
-            if (hoz.masive_of_cats[i]->health < 100)
+            if (hoz->masive_of_cats[i]->health < 100)
             {
-                hoz.masive_of_cats[i]->health += 10;
+                hoz->masive_of_cats[i]->health += 10;
             }
         }
     }
@@ -149,8 +151,6 @@ class Vet{
     }
 
 };
-
-
 int main()
 {   
     int N_c;
@@ -183,10 +183,14 @@ int main()
     std::cout<<"Enter the poroda of dog\n";
     std::cin>>p;
     CATS** mm = mas_c;
-    DOGS dog = DOGS(n, a, p);
-    Hozyain hoz = Hozyain("Ivan", "Petrovich", 23, N_c, N_d, dog, mm);
+    DOGS dog1 = DOGS(n, a, p);
+    Hozyain hoz = Hozyain("Ivan", "Petrovich", 23, N_c, N_d, dog1, mm);
     hoz.show_info();
     Vet vet = Vet("Petr", "Ivanovich");
-    vet.medosmotr(hoz);
+    Hozyain* hh;
+    std::cout<<"ghjh";
+    hh = &hoz;
+    vet.medosmotr(hh);
     vet.speak_with_Hozyain(hoz);
+    hoz.dog.show_hp();
 }
