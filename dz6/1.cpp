@@ -79,7 +79,6 @@ class DOGS: public Animals
             std::cout<<health<<"\n";
         }
         friend class Vet;
-        friend class Hozyain;
 };
 
 
@@ -89,17 +88,16 @@ class Hozyain{
         struct FIO fio;
         int age;
         int N_cat;
-        int N_dog;
+        int N_dog=1;
         CATS** masive_of_cats;
     public:
         DOGS dog;
         friend class Vet;
-        Hozyain(std::string nn, std::string sn, int age__, int N_cat_, int N_dog_, DOGS d, CATS** c)
+        Hozyain(std::string nn, std::string sn, int age__, int N_cat_, DOGS d, CATS** c)
         {
             fio = FIO{nn, sn};
             age = age__;
             N_cat = N_cat_;
-            N_dog = N_dog_;
             this->dog = d;
             masive_of_cats = c;
         }
@@ -114,10 +112,13 @@ class Hozyain{
         std::cout<<'\n';
         std::cout<<"Dogs:\n";
         dog.show_info();
-        std::cout<<"Cats:\n";
-        for (int i = 0; i<N_cat; i++)
+        if (N_cat!=0)
         {
-            masive_of_cats[i]->show_info();
+            std::cout<<"Cats:\n";
+            for (int i = 0; i<N_cat; i++)
+            {
+                masive_of_cats[i]->show_info();
+            }
         }
     }
 
@@ -134,7 +135,6 @@ class Vet{
     {   
         if (hoz->dog.health < 100)
         {
-        std::cout<<"sda\n";
         hoz->dog.health += 10;
         }
         for (int i = 0; i<hoz->N_cat; i++)
@@ -171,8 +171,6 @@ int main()
         std::cin>>p;
         mas_c[i] = new CATS(n, a, p);
     }
-    std::cout<<"How many dogs do you have?\n";
-    std::cin>>N_d;
     std::string n;
     int a;
     std::string p;
@@ -184,11 +182,10 @@ int main()
     std::cin>>p;
     CATS** mm = mas_c;
     DOGS dog1 = DOGS(n, a, p);
-    Hozyain hoz = Hozyain("Ivan", "Petrovich", 23, N_c, N_d, dog1, mm);
+    Hozyain hoz = Hozyain("Ivan", "Petrovich", 23, N_c, dog1, mm);
     hoz.show_info();
     Vet vet = Vet("Petr", "Ivanovich");
     Hozyain* hh;
-    std::cout<<"ghjh";
     hh = &hoz;
     vet.medosmotr(hh);
     vet.speak_with_Hozyain(hoz);
