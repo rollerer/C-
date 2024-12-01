@@ -108,12 +108,11 @@ class Elements
 //элеиент огня
 class Fire: public Elements
 {   
-    
+    public:
     void effect(Target* t, int i)
     {
         t->debuffs[i] = "burning\n";
     }
-    public:
     Fire()
     {   
         atack = 10;
@@ -124,11 +123,11 @@ class Fire: public Elements
 //элемент воды
 class Water: public Elements
 {   
+    public:
     void effect(Target* t, int i)
     {
         t->debuffs[i] = "wash\n";
     }
-    public:
     Water()
     {
         name = "wa";
@@ -139,12 +138,11 @@ class Water: public Elements
 // элемент земли
 class Earth: public Elements
 {
-    
+    public:
     void effect(Target* t, int i)
     {   
         t->buffs[i] = "stone\n";
     }
-    public:
     Earth()
     {
         name = "ear";
@@ -283,28 +281,22 @@ main()
         std::cout<<"How many elements in nature spell?\n";
         std::cin>>N;
         Elements** m {new Elements*[N]};
-        Fire f = Fire();
-        Water w = Water();
-        Earth e = Earth();
         std::string ell;
         for(int i = 0; i<N; i ++)
         {   
             std::cout<<"Write "<<N<<" elements: fire (f), water (w), earth (e)\n";
             std::cin>>ell;
             if(ell == "f")
-            {   
-                f = Fire(); 
-                m[i] = &f;
+            {    
+                m[i] = new Fire();
             }
             else if(ell == "w")
             {
-                w = Water();
-                m[i] = &w;
+                m[i] = new Water();
             }
             else if (ell == "e")
             {
-                e = Earth();
-                m[i] = &e;
+                m[i] = new Earth();
             }
             else
             {
@@ -314,10 +306,10 @@ main()
         }    
         Ns[i] = new NatureSpell(m, N);
     }    
-    std::string *b {new std::string[N]};
-    std::string *d {new std::string[N]};
+    std::string *b {new std::string[10]};
+    std::string *d {new std::string[10]};
     Wizard wiz = Wizard("Harry", 4); 
-    Target target = Target(100, 19, d, b, N);
+    Target target = Target(100, 19, d, b, 10);
     std::cout<<"_________________________________________\n";
     Book book = Book("Tom", 19, Ns, N_NS);
     book.inf(); 
@@ -331,4 +323,5 @@ main()
     {
         std::cout<<"Not enough level\n";
     }
+    target.inf();
 }
