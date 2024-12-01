@@ -19,6 +19,8 @@ class Target
         std::string* debuffs;
         std::string* buffs;
         int size;
+        int FreeDebuff = 0;
+        int FreeBuff = 0;
         Target(int h, int s, std::string* d, std::string* b, int n)
         {
             health = h;
@@ -52,20 +54,21 @@ class Spell
     int protect;
     int heal;
     int level;
-    virtual void ability() = 0;
+    virtual void ability(Target*) = 0;
 };
 // атакующие заклинания
 class Attack: public Spell
 {
-    void ability()
+    void ability(Target* t)
     {
-        
+        t->debuffs[t->FreeDebuff] = "burning";
+        t->health -= 18;
     }
 };
 // защитные
 class Protect: public Spell
 {  
-    void ability()
+    void ability(Target* t)
     {
         
     }
@@ -73,7 +76,7 @@ class Protect: public Spell
 // бытовые
 class Household: public Spell
 {   
-    void ability()
+    void ability(Target* t)
     {
         
     }
@@ -98,7 +101,7 @@ class Unforgivable: public Spell
 class Elements
 {   protected:
         int atack;
-        int protect;
+        int protect = 0;
         std::string name;
     public:
         virtual void effect(Target* , int) = 0;
@@ -165,12 +168,12 @@ class NatureSpell
         {   
             int total_damage = 0;
             int total_shield = 0;
-            int ttt;
+            int ttt = 0;
             for(int i = 0; i<N; i++)
             {   
                 elem[i]->effect(t, i);
                 total_damage = SUM(total_damage, elem[i]->atack);
-                total_damage = SUM(total_damage, elem[i]->protect);
+                total_shield = SUM(total_shield, elem[i]->protect);
             }
 
             if(total_damage>t->shield)
@@ -257,7 +260,6 @@ class Wizard
     {   
         if(book->Nature_spells[num]->level <= level)
         {
-            std::cout<<book->Nature_spells[num]->N<<'\n';
         book->Nature_spells[num]->effect(t);
         }
         else
