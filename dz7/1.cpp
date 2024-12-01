@@ -16,35 +16,13 @@ class Target
     public:
         int health;
         int shield;
-        std::string* debuffs;
-        std::string* buffs;
+        std::string* debuffs {new std::string[20]};
+        std::string* buffs {new std::string[20]};
         int size;
         int FreeDebuff = 0;
         int FreeBuff = 0;
-        Target(int h, int s, std::string* d, std::string* b, int n)
-        {
-            health = h;
-            shield = s;
-            debuffs = d;
-            buffs = b;
-            size = n;
-
-        }
-        void inf()
-        {
-            std::cout<<"health: "<<health<<'\n';
-            std::cout<<"shield: "<<shield<<'\n';
-            std::cout<<"Debuffs: \n";
-            for (int i = 0; i<size; i++)
-            {
-                std::cout<<debuffs[i];
-            }
-            std::cout<<"Buffs: \n";
-            for (int i = 0; i<size; i++)
-            {
-                std::cout<<buffs[i];
-            }
-        }
+        virtual void inf() = 0;
+        
 };
 
 // заклинания аля Гарри Поттер[
@@ -62,6 +40,7 @@ class Attack: public Spell
     void ability(Target* t)
     {
         t->debuffs[t->FreeDebuff] = "burning";
+        t->FreeDebuff += 1;
         t->health -= 18;
     }
 };
@@ -70,7 +49,8 @@ class Protect: public Spell
 {  
     void ability(Target* t)
     {
-        
+        t->buffs[t->FreeBuff] = "protected";
+        t->FreeBuff+=1;
     }
 };
 // бытовые
@@ -100,7 +80,7 @@ class Unforgivable: public Spell
 // стихийные заклинания [
 class Elements
 {   protected:
-        int atack;
+        int atack = 0;
         int protect = 0;
         std::string name;
     public:
@@ -108,13 +88,14 @@ class Elements
         friend class NatureSpell;
 };
 
-//элеиент огня
+//элемент огня
 class Fire: public Elements
 {   
     public:
     void effect(Target* t, int i)
     {
-        t->debuffs[i] = "burning\n";
+        t->debuffs[t->FreeDebuff] = "burning\n";
+        t->FreeDebuff+=1;
     }
     Fire()
     {   
@@ -129,7 +110,8 @@ class Water: public Elements
     public:
     void effect(Target* t, int i)
     {
-        t->debuffs[i] = "wash\n";
+        t->debuffs[t->FreeDebuff] = "wash\n";
+        t->FreeDebuff+=1;
     }
     Water()
     {
@@ -144,7 +126,8 @@ class Earth: public Elements
     public:
     void effect(Target* t, int i)
     {   
-        t->buffs[i] = "stone\n";
+        t->buffs[t->FreeBuff] = "stone\n";
+        t->FreeBuff+=1;
     }
     Earth()
     {
@@ -178,11 +161,9 @@ class NatureSpell
 
             if(total_damage>t->shield)
             {   
-                ttt = -t->shield;
-                total_damage = SUM(total_damage, ttt);
+                total_damage-=t->shield;
                 t->shield = 0;
-                ttt = - total_damage;
-                t->health = SUM(t->health, ttt);
+                t->health -= total_damage;
             }
             else
             {  
@@ -246,15 +227,33 @@ class Book
     }
 
 };
-class Wizard
+class Wizard: public Target
 {   
     public:
     std::string name;
     int level;  
-    Wizard(std::string n, int l)
+    Wizard(std::string n, int l, int h, int p)
     {
         name = n;
         level = l;
+        health = h;
+        shield = p;
+    }
+    void inf()
+    {       
+            std::cout<<"Name: "<<name<<'\n';
+            std::cout<<"health: "<<health<<'\n';
+            std::cout<<"shield: "<<shield<<'\n';
+            std::cout<<"Debuffs: \n";
+            for (int i = 0; i<FreeDebuff; i++)
+            {
+                std::cout<<debuffs[i];
+            }
+            std::cout<<"Buffs: \n";
+            for (int i = 0; i<FreeBuff; i++)
+            {
+                std::cout<<buffs[i];
+            }
     }
     void use(Book* book, std::string n, int num, Target* t)
     {   
@@ -308,10 +307,8 @@ main()
         }    
         Ns[i] = new NatureSpell(m, N);
     }    
-    std::string *b {new std::string[10]};
-    std::string *d {new std::string[10]};
-    Wizard wiz = Wizard("Harry", 4); 
-    Target target = Target(100, 19, d, b, 10);
+    Wizard wiz = Wizard("Harry", 4, 100, 20); 
+    Wizard target = Wizard("Harry", 5, 100, 40);
     std::cout<<"_________________________________________\n";
     Book book = Book("Tom", 19, Ns, N_NS);
     book.inf(); 
@@ -321,7 +318,7 @@ main()
     try{   
     wiz.use(&book, "NS", g-1, &target);
     }
-    catch(...)
+    catch(const int&)
     {
         std::cout<<"Not enough level\n";
     }
