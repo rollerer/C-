@@ -28,18 +28,29 @@ class Target
 // заклинания аля Гарри Поттер[
 class Spell
 {   protected:
+    std::string name;
     int damage;
     int protect;
     int heal;
     int level;
     virtual void ability(Target*) = 0;
+    public:
+    void inf()
+    {
+        std::cout<<name;
+    }
 };
 // атакующие заклинания
 class Attack: public Spell
-{
+{   
+    public:
+    Attack()
+    {
+        name = "Attack\n";
+    }
     void ability(Target* t)
     {
-        t->debuffs[t->FreeDebuff] = "burning";
+        t->debuffs[t->FreeDebuff] = "burning\n";
         t->FreeDebuff += 1;
         t->health -= 18;
     }
@@ -47,27 +58,42 @@ class Attack: public Spell
 // защитные
 class Protect: public Spell
 {  
+    public:
+    Protect()
+    {
+        name = "Protect\n";
+    }
     void ability(Target* t)
     {
-        t->buffs[t->FreeBuff] = "protected";
+        t->buffs[t->FreeBuff] = "protected\n";
         t->FreeBuff+=1;
     }
 };
 // бытовые
 class Household: public Spell
 {   
+    public:
+    Household()
+    {
+        name = "Household\n";
+    }
     void ability(Target* t)
     {
-        
+        std::cout<<"it is not a fight spell\n";
     }
 };
 // непростительные
 class Unforgivable: public Spell
 {   
-    std::string curse;
-    void ability()
+    public:
+    Unforgivable()
     {
-
+        name = "Unforgivable\n";
+    }
+    std::string curse;
+    void ability(Target* t)
+    {
+        std::cout<<"better dont use it\n";
     }
 };
 
@@ -202,12 +228,22 @@ class Book
     Spell** Harry_spells;
     NatureSpell** Nature_spells;
     int Nat_Sp;    
+    int Har_Sp;
     Book(std::string n, int p, NatureSpell** ns, int n_ns)
     {
         name = n;
         pages = p;
         Nature_spells = ns;
         Nat_Sp = n_ns;
+    }
+    Book(std::string n, int p, NatureSpell** ns, int n_ns, Spell** sp, int s)
+    {
+        name = n;
+        pages = p;
+        Nature_spells = ns;
+        Nat_Sp = n_ns;
+        Harry_spells = sp;
+        Har_Sp = s;
     }
     Book(std::string n, int p, NatureSpell** ns)
     {
@@ -222,6 +258,11 @@ class Book
         for(int i = 0; i<Nat_Sp; i++)
         {   
             Nature_spells[i]->inf();
+        }
+        std::cout<<"Harry Potter spells: \n";
+        for(int i = 0; i<Har_Sp; i++)
+        {
+            Harry_spells[i]->inf();
         }
 
     }
@@ -307,10 +348,14 @@ main()
         }    
         Ns[i] = new NatureSpell(m, N);
     }    
+    Spell** Sp {new Spell*[3]};
+    Sp[0] = new Attack();
+    Sp[1] = new Protect();
+    Sp[2] = new Unforgivable();
     Wizard wiz = Wizard("Harry", 4, 100, 20); 
     Wizard target = Wizard("Harry", 5, 100, 40);
     std::cout<<"_________________________________________\n";
-    Book book = Book("Tom", 19, Ns, N_NS);
+    Book book = Book("Tom", 19, Ns, N_NS, Sp, 3);
     book.inf(); 
     std::cout<<"What spell do you want to use?(write number)\n";
     int g;
