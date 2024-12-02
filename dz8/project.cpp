@@ -324,10 +324,12 @@ class Weapons
         std::cout<<"Type: "<<type<<"\n";
     }
     friend class Backpack;
+    friend class Orks;
 };
 
 class Melee: public Weapons
 {
+    public:
     Melee(std::string type)
     {
         if(type == "sword")
@@ -360,12 +362,14 @@ class Melee: public Weapons
 
 
 class Ranged: public Weapons
-{
+{   
+    public:
     Ranged()
     {
         damage = 10;
         range = 10;
         delay = 5;
+        type = "Bow";
     }
     void ability(Target* t)
     {
@@ -376,6 +380,7 @@ class Ranged: public Weapons
 class TreeStaff: public Weapons
 {   
     int heal;
+    public:
     TreeStaff()
     {
         heal = 10;
@@ -391,16 +396,22 @@ class TreeStaff: public Weapons
 
 class Backpack
 {
-    Weapons** weap;
     std::string owner = "Unsigned";
     int Weap = 0;
     void inf()
     {
         std::cout<<"Owner: "<<owner<<'\n';
-        for(int i = 1; i<Weap; i++)
+        for(int i = 0; i<Weap; i++)
         {
             weap[i]->inf();
         }
+    }
+    public:
+    Weapons** weap;
+    Backpack(Weapons** w, int W)
+    {
+        weap = w;
+        Weap = W;
     }
     friend class Orks;
 };
@@ -420,6 +431,10 @@ class Orks: public Target
         name = n;
         pack = p;
         pack->owner = name;
+    }
+    void use(Target* t, int i)
+    {
+        pack->weap[i]->ability(t);
     }
     friend class Backpack;
 };
@@ -487,8 +502,12 @@ main()
         std::cout<<"Not enough level\n";
     }
     target.inf();
-
-    Backpack pack = Backpack();
+    std::cout<<"_____________________________\n";
+    Backpack pack = Backpack(new Weapons*[1], 1);
     Orks ork = Orks("Aboba", &pack);
+    Ranged bow = Ranged();
+    pack.weap[0] = &bow;
     ork.inf();
+    ork.use(&wiz, 0);
+    wiz.inf();
 }
