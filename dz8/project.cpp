@@ -179,7 +179,7 @@ class NatureSpell
 {   
     private:
         Elements** elem;
-        
+        int dist = 0;
         
     public:
         int N;
@@ -213,6 +213,7 @@ class NatureSpell
             elem = el;
             N = n;
             level = int(N/3)+1;
+            dist = N + 1;
         }
         NatureSpell()
         {
@@ -229,6 +230,7 @@ class NatureSpell
 
             std::cout<<"name of spell: "<<NAME<<"; level: "<<level<<"\n";
         }
+        friend class Wizard;
 };
 
 class Book
@@ -318,18 +320,27 @@ class Wizard: public Target
     }
     void use(Book* book, std::string n, int num, Target* t)
     {   
-        if(book->Nature_spells[num]->level <= level)
+        NatureSpell* sp = book->Nature_spells[num];
+        if(dist(this, t) < sp->dist)
         {
-        book->Nature_spells[num]->effect(t);
+            if(book->Nature_spells[num]->level <= level)
+            {
+            book->Nature_spells[num]->effect(t);
+            }
+            else
+            {
+                throw(1);
+            }
         }
         else
-        {
-            throw(1);
+        {   
+            throw("");
         }
     }
 };
 // ]
 
+//Всё для орков__________________________________________________
 class Weapons
 {
     protected:
@@ -504,7 +515,7 @@ main()
     Sp[0] = new Attack();
     Sp[1] = new Protect();
     Sp[2] = new Unforgivable();
-    Wizard wiz = Wizard("Harry", 4, 100, 20, 3, 4); 
+    Wizard wiz = Wizard("Harry", 4, 100, 20, 1, 1); 
     Wizard target = Wizard("Wood", 0, 100, 40);
     std::cout<<"_________________________________________\n";
     Book book = Book("Tom", 19, Ns, N_NS, Sp, 3);
@@ -522,6 +533,10 @@ main()
     {
         std::cout<<"Not enough level\n";
     }
+    catch(const char*)
+    {
+        std::cout<<"Too away from you\n";
+    }
     target.inf();
     std::cout<<"_____________________________\n";
     Backpack pack = Backpack(new Weapons*[1], 1);
@@ -531,5 +546,4 @@ main()
     ork.inf();
     ork.use(&wiz, 0);
     wiz.inf();
-    std::cout<<dist(&ork, &wiz);
 }
