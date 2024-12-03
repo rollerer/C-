@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>	
 
 template <typename T> T SUM(T& a, T& b)
 {
@@ -11,6 +12,8 @@ template <typename T> int SIZE(T& a)
     return size;
 }
 
+
+
 class Target
 {   
     public:
@@ -19,11 +22,19 @@ class Target
         std::string* debuffs {new std::string[20]};
         std::string* buffs {new std::string[20]};
         int size;
+        int coord[2] = {0, 0};
         int FreeDebuff = 0;
         int FreeBuff = 0;
         virtual void inf() = 0;
         
 };
+
+float dist(Target* a, Target*b)
+{   
+    double n = pow(a->coord[0] - b->coord[0], 2);
+    double m = pow(a->coord[1] - b->coord[1], 2);
+    return pow(n+m, 0.5);
+}
 
 // заклинания аля Гарри Поттер[
 class Spell
@@ -280,6 +291,15 @@ class Wizard: public Target
         health = h;
         shield = p;
     }
+    Wizard(std::string n, int l, int h, int p, int x, int y)
+    {
+        name = n;
+        level = l;
+        health = h;
+        shield = p;
+        coord[0] = x;
+        coord[1] = y;
+    }
     void inf()
     {       
             std::cout<<"Name: "<<name<<'\n';
@@ -444,6 +464,7 @@ class Orks: public Target
 
 main()
 {   
+
     std::cout<<"How many Nature spells do you now?\n";    
     int N_NS;
     std::cin>>N_NS;
@@ -483,7 +504,7 @@ main()
     Sp[0] = new Attack();
     Sp[1] = new Protect();
     Sp[2] = new Unforgivable();
-    Wizard wiz = Wizard("Harry", 4, 100, 20); 
+    Wizard wiz = Wizard("Harry", 4, 100, 20, 3, 4); 
     Wizard target = Wizard("Wood", 0, 100, 40);
     std::cout<<"_________________________________________\n";
     Book book = Book("Tom", 19, Ns, N_NS, Sp, 3);
@@ -510,4 +531,5 @@ main()
     ork.inf();
     ork.use(&wiz, 0);
     wiz.inf();
+    std::cout<<dist(&ork, &wiz);
 }
