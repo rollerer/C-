@@ -173,7 +173,7 @@ class NatureSpell
             elem = el;
             N = n;
             level = int(N/3)+1;
-            dist = N + 1;
+            dist = N*3 + 1;
         }
         NatureSpell()
         {

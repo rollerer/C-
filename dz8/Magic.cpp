@@ -92,23 +92,24 @@ class Wizard: public Target
     void use(Book* book, std::string n, int num, Target* t)
     {   
         NatureSpell* sp = book->Nature_spells[num];
-        if(dist(this, t) < sp->dist)
+        for(int i = 0; i<4; i++)
         {
-            if(book->Nature_spells[num]->level <= level)
+            if(dist(this, t) < sp->dist)
             {
-            book->Nature_spells[num]->effect(t);
+                if(sp->level <= level)
+                {
+                    sp->effect(t);
+                    break;
+                }
+                else
+                {
+                    throw(1);
+                }
             }
             else
-            {
-                throw(1);
-            }
-        }
-        else
-        {   
-            throw("");
-            for(int i = 0; i<4; i++)
-            {
+            {   
                 move(this, t);
+                std::cout<<dist(this, t)<<'\n';
             }
         }
     }

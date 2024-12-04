@@ -112,6 +112,7 @@ class Orks: public Target
     std::string name;
     Backpack* pack;
     public:
+    int skill;
     void inf()
     {
         std::cout<<"Name: "<<name<<"\n";
@@ -125,7 +126,27 @@ class Orks: public Target
     }
     void use(Target* t, int i)
     {
-        pack->weap[i]->ability(t);
+        Weapons* weap = pack->weap[i];
+        for(int k = 0; k<4; k++)
+        {
+            if(dist(this, t) < weap->range)
+            {
+                if(weap->skill <= skill)
+                {
+                    weap->ability(t);
+                }
+                else
+                {
+                    throw(1);
+                }
+            }
+            else
+            {   
+                move(this, t);
+                std::cout<<dist(this, t)<<'\n';
+                throw("");
+            }
+        }
     }
     friend class Backpack;
 };

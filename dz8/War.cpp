@@ -43,7 +43,7 @@ main()
     Sp[0] = new Attack();
     Sp[1] = new Protect();
     Sp[2] = new Unforgivable();
-    Wizard wiz = Wizard("Harry", 4, 100, 20, 1, 1); 
+    Wizard wiz = Wizard("Harry", 4, 100, 20, 5, 5); 
     Wizard target = Wizard("Wood", 0, 100, 40);
     std::cout<<"_________________________________________\n";
     Book book = Book("Tom", 19, Ns, N_NS, Sp, 3);
