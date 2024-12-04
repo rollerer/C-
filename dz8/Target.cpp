@@ -37,4 +37,30 @@ float dist(Target* a, Target*b)
     double m = pow(a->coord[1] - b->coord[1], 2);
     return pow(n+m, 0.5);
 }
+
+void move(Target* a, Target* b)
+{
+    if (abs(a->coord[0] - b->coord[0]) > abs(a->coord[1] - b->coord[1]))
+    {
+        if(a->coord[0] > b->coord[0])
+        {
+            a->coord[0] -= 1;
+        }
+        else
+        {
+            a->coord[0] += 1;
+        }
+    }
+    else
+    {
+        if(a->coord[1] > b->coord[1])
+        {
+            a->coord[1] -= 1;
+        }
+        else
+        {
+            a->coord[1] += 1;
+        }
+    }
+}
 #endif
