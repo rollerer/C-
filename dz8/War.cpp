@@ -1,77 +1,64 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include "Magic.cpp"
 #include "Orks.cpp"
+void duel(Wizard* a, Orks* b, int i)
+{
+    a->use("Ns", i, b);
+    b->use(a, i);
+} 
 
 main()
-{
-    std::cout<<"How many Nature spells do you now?\n";    
-    int N_NS;
-    std::cin>>N_NS;
-    NatureSpell* Ns[N_NS];
-    int N;
-    for (int i = 0; i< N_NS; i++)
-    {
-        std::cout<<"How many elements in nature spell?\n";
-        std::cin>>N;
-        Elements** m {new Elements*[N]};
-        std::string ell;
-        for(int i = 0; i<N; i ++)
+{   
+    std::string s;
+    std::string d;
+    Wizard** Wizards = new Wizard*[0];
+    std::string type;
+    std::ifstream file("file.txt");
+    Book* book{new Book()};
+    NatureSpell** m{new NatureSpell*[0]};
+    std::string name_wiz = "";
+    std::string name_book = "";
+    int num_sp = 0;
+    int wiz = 0;
+    while(std::getline(file, s))
+    {   
+        if(s == "Spells")
         {   
-            std::cout<<"Write "<<N<<" elements: fire (f), water (w), earth (e)\n";
-            std::cin>>ell;
-            if(ell == "f")
-            {    
-                m[i] = new Fire();
-            }
-            else if(ell == "w")
-            {
-                m[i] = new Water();
-            }
-            else if (ell == "e")
-            {
-                m[i] = new Earth();
-            }
-            else
-            {
-                std::cout<<"wrong input\n";
-                i--;
-            }        
-        }    
-        Ns[i] = new NatureSpell(m, N);
-    }    
-    Spell** Sp {new Spell*[2]};
-    Sp[0] = new Attack();
-    Sp[1] = new Protect();
-    Sp[2] = new Unforgivable();
-    Wizard wiz = Wizard("Harry", 4, 100, 20, 5, 5); 
-    Wizard target = Wizard("Wood", 0, 100, 40);
-    std::cout<<"_________________________________________\n";
-    Book book = Book("Tom", 19, Ns, N_NS, Sp, 3);
-    book.inf(); 
-    // Пока что только для Nature sprells
-    std::cout<<"What spell do you want to use?(write number)\n";
-    int g;
-    std::cin>>g;
-    try{   
-    wiz.use(&book, "NS", g-1, &target);
-    //Пример исключения (уровень склишком низкий для использования заклинаний)
-    target.use(&book, "NS", g-1, &wiz);
+            type = "sp";
+            std::getline(file,s);
+        }
+        else if(s == "Orks")
+        {
+            type = "ork";
+            std::getline(file,s);
+        }
+        else if(s == "Wizards")
+        {
+            type = "wiz";
+            std::getline(file,s);
+        }
+        if(type == "sp")
+        {
+        std::stringstream str(s);
+        str>>name_wiz;
+        name_book = name_wiz + "'s book";
+        Wizards[wiz] = new Wizard(name_wiz, 1, 100, 20, 0, 0, new Book(name_book, 19, new NatureSpell*[0], 0));
+        while(str>>d)
+        {   
+            Wizards[wiz]->book->Nature_spells[num_sp] = createNSp(d);
+            Wizards[wiz]->book->Nat_Sp++;
+            num_sp++;
+        }
+        wiz ++;
+        num_sp = 0;
+        }
+        s = "";
     }
-    catch(const int&)
+    for(int i = 0; i < wiz; i ++)
     {
-        std::cout<<"Not enough level\n";
+        Wizards[i]->inf();
     }
-    catch(const char*)
-    {
-        std::cout<<"Too away from you\n";
-    }
-    target.inf();
-    std::cout<<"_____________________________\n";
-    Backpack pack = Backpack(new Weapons*[1], 1);
-    Orks ork = Orks("Aboba", &pack);
-    Ranged bow = Ranged();
-    pack.weap[0] = &bow;
-    ork.inf();
-    ork.use(&wiz, 0);
-    wiz.inf();
+
 }

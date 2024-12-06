@@ -16,6 +16,17 @@ class Book
         pages = p;
         Nature_spells = ns;
         Nat_Sp = n_ns;
+        Har_Sp = 0;
+        Harry_spells = new Spell*[0];
+    }
+    Book()
+    {
+        pages = 0;
+        name = "";
+        Harry_spells = nullptr;
+        Nature_spells = nullptr;
+        Nat_Sp = 0;
+        Har_Sp = 0;
     }
     Book(std::string n, int p, NatureSpell** ns, int n_ns, Spell** sp, int s)
     {
@@ -26,11 +37,14 @@ class Book
         Harry_spells = sp;
         Har_Sp = s;
     }
-    Book(std::string n, int p, NatureSpell** ns)
+    Book(std::string n, int p, Spell** sp, int s)
     {
         name = n;
         pages = p;
-        Nature_spells = ns;
+        Nature_spells = new NatureSpell*[0];
+        Nat_Sp = 0;
+        Harry_spells = sp;
+        Har_Sp = s;
     }
     void inf()
     {
@@ -57,6 +71,7 @@ class Wizard: public Target
     public:
     std::string name;
     int level;  
+    Book* book;
     Wizard(std::string n, int l, int h, int p)
     {
         name = n;
@@ -64,7 +79,7 @@ class Wizard: public Target
         health = h;
         shield = p;
     }
-    Wizard(std::string n, int l, int h, int p, int x, int y)
+    Wizard(std::string n, int l, int h, int p, int x, int y, Book* b)
     {
         name = n;
         level = l;
@@ -72,6 +87,7 @@ class Wizard: public Target
         shield = p;
         coord[0] = x;
         coord[1] = y;
+        book = b;
     }
     void inf()
     {       
@@ -88,9 +104,15 @@ class Wizard: public Target
             {
                 std::cout<<buffs[i];
             }
+            std::cout<<"Book: "<<'\n';
+            book->inf();
+            std::cout<<"______________________________________\n";
+
     }
-    void use(Book* book, std::string n, int num, Target* t)
+    void use(std::string n, int num, Target* t)
     {   
+        if(n == "Ns")
+        {
         NatureSpell* sp = book->Nature_spells[num];
         for(int i = 0; i<4; i++)
         {
@@ -111,6 +133,11 @@ class Wizard: public Target
                 move(this, t);
                 std::cout<<dist(this, t)<<'\n';
             }
+        }
+        }
+        else
+        {
+
         }
     }
 };

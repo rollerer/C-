@@ -142,7 +142,7 @@ class NatureSpell
         int dist = 0;
         
     public:
-        int N;
+        int N = 0;
         int level;
         void effect(Target* t)
         {   
@@ -168,19 +168,19 @@ class NatureSpell
             }
             t->shield+=total_shield;
         }
-        NatureSpell(Elements** el, int n)
+    NatureSpell(Elements** el, int n)
         {
             elem = el;
             N = n;
             level = int(N/3)+1;
             dist = N*3 + 1;
         }
-        NatureSpell()
+    NatureSpell()
         {
             elem = 0;
             N = 0;
         }
-        void inf()
+    void inf()
         {   
             std::string NAME = "";
             for(int i = 0; i < N; i++)
@@ -188,7 +188,30 @@ class NatureSpell
                 NAME = SUM(NAME, elem[i]->name);
             }
 
-            std::cout<<"name of spell: "<<NAME<<"; level: "<<level<<"\n";
+            std::cout<<NAME<<"; level: "<<level<<"\n";
         }
         friend class Wizard;
 };
+
+NatureSpell* createNSp(std::string s)
+{   
+    Elements** m = new Elements*[s.length()];
+    std::string ell;
+    for(int i = 0; i<s.length(); i++)
+    {   
+        ell = s[i];
+        if(ell == "f")
+        {    
+            m[i] = new Fire();
+        }
+        else if(ell == "w")
+        {
+            m[i] = new Water();
+        }
+        else if (ell == "e")
+        {
+            m[i] = new Earth();
+        }       
+    }
+    return new NatureSpell(m, s.length());
+}
