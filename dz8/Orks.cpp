@@ -27,7 +27,7 @@ class Melee: public Weapons
         if(t == "sword")
         {
             range = 2;
-            damage = 5;
+            damage = 15;
             delay = 2;
             skill = 1;
             type = "Sword";
@@ -35,7 +35,7 @@ class Melee: public Weapons
         else if(t == "dagger")
         {
             range = 1;
-            damage = 3;
+            damage = 10;
             delay = 0.5;
             skill = 1;
             type = "Dagger";
@@ -58,7 +58,7 @@ class Ranged: public Weapons
     public:
     Ranged()
     {
-        damage = 10;
+        damage = 40;
         range = 10;
         delay = 5;
         type = "Bow";

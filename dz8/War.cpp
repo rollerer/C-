@@ -8,14 +8,18 @@ int duel(Wizard* a, Orks* b, int i)
 {   
     if(b->health > 0 and a->health > 0)
     {
-        a->use("Hs", i, b);
+        a->use("Ns", i, b);
         if(b->health <= 0)
         {   
             a->level++;
             std::cout<<b->name<<" is dead\n";
-            return 2;
+            return 1;
         }
     }
+    return 0;
+}
+int duel(Orks* b, Wizard* a, int i)
+{
     if(b->health > 0 and a->health > 0)
     {
         b->use(a, i);
@@ -28,6 +32,49 @@ int duel(Wizard* a, Orks* b, int i)
     }
     return 0;
 } 
+void show(Wizard**a, Orks**b, int wiz, int ork)
+{   
+    int flag = 0;
+    std::cout<<"_______________________________________________________\n";
+    for(int i = 0; i<15; i++)
+    {
+        for(int j = 0; j<15; j++)
+        {   
+            flag = 0;
+            for(int k = 0; k<wiz; k++)
+            {
+                if(a[k]->coord[0]==j and a[k]->coord[1] == i)
+                {   
+                    if(!flag)
+                    {
+                        std::cout<<"m";
+                        flag = 1;
+                    }
+                }
+            }
+            if(!flag)
+            {
+            for(int k = 0; k<ork; k++)
+            {
+                if(b[k]->coord[0]==j and b[k]->coord[1] == i)
+                {   
+                    if(!flag)
+                    {
+                        std::cout<<"o";
+                        flag = 2;
+                    }
+                }
+            }
+            }
+            if(!flag)
+            {
+                std::cout<<" ";
+            }
+        }
+        std::cout<<'\n';
+    }
+    std::cout<<"_______________________________________________________\n";
+}
 
 main()
 {   
@@ -43,6 +90,7 @@ main()
     int num_har = 0;
     int wiz = 0;
     int dead_wiz = 0;
+    int x_wiz = 0;
 
     Orks** Orki = new Orks*[0];
     std::string name_ork = "";
@@ -50,6 +98,7 @@ main()
     int num_weap = 0;
     int ork = 0;
     int dead_ork = 0;
+    int x_ork = 0;
 
     while(std::getline(file, s))
     {   
@@ -73,7 +122,8 @@ main()
             std::stringstream str(s);
             str>>name_wiz;
             name_book = name_wiz + "'s book";
-            Wizards[wiz] = new Wizard(name_wiz, 1, 100, 20, 0, 0, new Book(name_book, 19));
+            Wizards[wiz] = new Wizard(name_wiz, 1, 100, 20, x_wiz*2, 0, new Book(name_book, 19));
+            x_wiz++;
             std::string fl = "";
             while(str>>d)
             {   
@@ -108,7 +158,9 @@ main()
             std::stringstream str(s);
             str>>name_ork;
             name_backpack = name_ork + "'s backpack";
-            Orki[ork] = new Orks(name_ork, 1, 100, 20, 0, 10, new Backpack(new Weapons*[0], 0));
+
+            Orki[ork] = new Orks(name_ork, 1, 100, 20, x_ork*2, 10, new Backpack(new Weapons*[0], 0));
+            x_ork++;
             while(str>>d)
             {
                 Orki[ork]->pack->weap[num_weap] = createWeap(d);
@@ -122,29 +174,63 @@ main()
         s = "";
     }
     int n;
-    for(int i = 0; i< 20; i++)
-    {
-        try
-        {   
-            n = duel(Wizards[0], Orki[0], 0);
-            if(n == 2)
-            {
-                dead_ork++;
-            }  
-            else if(n == 1)
-            {
-                dead_wiz ++;
+    int tar_w = 0;
+    int tar_o = 0;
+    Wizard* target_wiz = Wizards[tar_w];
+    Orks* target_ork = Orki[tar_o];
+    while(wiz!=dead_wiz and ork!=dead_ork)
+    {   
+        target_wiz = Wizards[tar_w];
+        for(int i = 0; i<wiz; i++)
+        {
+            try
+            {   
+                n = duel(Wizards[i], Orki[tar_o], Wizards[i]->level-1);
+                if(n == 1)
+                {
+                    dead_ork++;
+                    tar_o ++;
+                    break;
+                }
             }
+            catch(const char*)
+            {
+                std::cout<<"Can't reach\n";
+            }
+            catch (const int&)
+            {
+                std::cout<<"Not enough\n";
+            } 
         }
-        catch(const char*)
+        for(int i = 0; i<ork; i++)
         {
-            std::cout<<"Can't reach\n";
+            try
+            {   
+                n = duel(Orki[i], target_wiz, 0);
+                if(n == 1)
+                {
+                    dead_wiz++;
+                    tar_w++;
+                    break;
+                }
+            }
+            catch(const char*)
+            {
+                std::cout<<"Can't reach\n";
+            }
+            catch (const int&)
+            {
+                std::cout<<"Not enough\n";
+            }      
         }
-        catch (const int&)
-        {
-            std::cout<<"Not enough\n";
-        }        
-        
+        show(Wizards, Orki, wiz, ork);
     }
-    Orki[0]->inf();
+    if(wiz == dead_wiz)
+    {
+        std::cout<<"Orks Win!\n";
+    }
+    else
+    {
+        std::cout<<"Wizards Win!\n";
+    }
 }
