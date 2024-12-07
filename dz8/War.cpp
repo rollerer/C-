@@ -11,8 +11,12 @@ int duel(Wizard* a, Orks* b, int i)
         a->use("Ns", i, b);
         if(b->health <= 0)
         {   
-            a->level++;
-            std::cout<<b->name<<" is dead\n";
+            if(a->level <= 4)
+            {
+                a->level++;
+            }
+            //std::cout<<b->name<<" is dead\n";
+            std::cout<<a->name<<" kill "<<b->name<<'\n';
             return 1;
         }
     }
@@ -26,7 +30,8 @@ int duel(Orks* b, Wizard* a, int i)
         if(a->health <= 0)
         {   
             b->skill ++;
-            std::cout<<a->name<<" is dead\n";
+            //std::cout<<a->name<<" ________________________________________________\n";
+            std::cout<<b->name<<" kill "<<a->name<<'\n';
             return 1;
         }
     }
@@ -177,6 +182,7 @@ main()
     int tar_w = 0;
     int tar_o = 0;
     int arrows = 10;
+    int ar = 0;
     while(wiz!=dead_wiz and ork!=dead_ork)
     {   
         for(int i = 0; i<wiz; i++)
@@ -208,7 +214,7 @@ main()
                 {
                     n = duel(Orki[i], Wizards[tar_w], 0);
                     if(n == 1)
-                    {
+                    {   
                         dead_wiz++;
                         tar_w++;
                         break;
@@ -221,12 +227,21 @@ main()
                 }
                 else if(Orki[i]->type == "Arch")
                 {   
+                    n = duel(Orki[i], Wizards[tar_w], ar);
+                    if(n == 1)
+                    {   
+                        dead_wiz++;
+                        tar_w++;
+                        break;
+                    }
                     if(arrows)
                     {
-                        Orki[i]->use(Wizards[tar_w], 0);
                         arrows-=1;
                     }
-                    Orki[i]->use(Wizards[tar_w], 1);
+                    else
+                    {
+                        ar = 1;
+                    }
                 }
             }
             catch(const char*)

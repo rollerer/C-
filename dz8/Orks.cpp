@@ -9,7 +9,7 @@ class Weapons
     float delay;
     int skill = 0;
     std::string type;
-    virtual void ability(Target*) = 0;
+    virtual void ability(Target*, int) = 0;
     void inf()
     {
         std::cout<<"Type: "<<type<<"\n";
@@ -26,7 +26,7 @@ class Melee: public Weapons
 
         if(t == "sword")
         {
-            range = 2;
+            range = 5;
             damage = 15;
             delay = 2;
             skill = 1;
@@ -45,9 +45,21 @@ class Melee: public Weapons
             throw(1);
         }
     }   
-    void ability(Target* t)
+    void ability(Target* t, int s)
     {
-        t->health -= damage;
+        damage = damage*(s+1)/2;
+        if(t->shield>damage)
+        {
+            t->shield-=damage;
+        }
+        else if(t->shield > 0)
+        {
+            t->health -= (damage - t->shield);
+        }
+        else
+        {
+        t->health-=damage;
+        }
     }
 };
 
@@ -63,8 +75,9 @@ class Ranged: public Weapons
         delay = 5;
         type = "Bow";
     }
-    void ability(Target* t)
+    void ability(Target* t, int s)
     {   
+        damage = damage*(s+1)/2;
         if(t->shield>damage)
         {
             t->shield-=damage;
@@ -90,9 +103,9 @@ class TreeStaff: public Weapons
         range = 8;
         delay = 10;
     }
-    void ability(Target* t)
+    void ability(Target* t, int s)
     {
-        t->health += heal;
+        t->health += heal*(s+1)/2;
     }
 };
 
@@ -159,13 +172,13 @@ class Orks: public Target
     void use(Target* t, int i)
     {
         Weapons* weap = pack->weap[i];
-        for(int k = 0; k<4; k++)
+        for(int k = 0; k<6; k++)
         {
             if(dist(this, t) <= weap->range)
             {
                 if(weap->skill <= skill)
                 {
-                    weap->ability(t);
+                    weap->ability(t, skill);
                     break;
                 }
                 else
