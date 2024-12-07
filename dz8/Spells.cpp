@@ -146,7 +146,8 @@ class Earth: public Elements
     Earth()
     {
         name = "ear";
-        protect = 8;
+        atack = 20;
+        dist = -1;
     }
 };
 
@@ -191,6 +192,10 @@ class NatureSpell
             for(int i = 0; i<N; i++)
             {
                 dist+=elem[i]->dist;   
+            }
+            if(dist<0)
+            {
+                dist = 0;
             }
         }
     NatureSpell()

@@ -1,11 +1,13 @@
 Spells
 Harry NatureSpells w wfw efefw wfw efef HarrySpells A123
-Gorge NatureSpells w fw fw wfw efef w wfw efef
-Ron NatureSpells w www wfw efef w wfw efef
-Tom NatureSpells e ffw wfw efef w wfw efef
-Bob NatureSpells f wfw wfw efef w wfw efef
+Gorge NatureSpells w fw fw wfw efef w wfw 
+Ron NatureSpells w www wfw efef w wfw efef 
+Tom NatureSpells e ffw wfw ewew w wfw efef
+Bob NatureSpells f wfw wfw ewew w wfw 
+Stome NatureSpells e eewww ewew w wfw 
 Orks
-Bamb sword bow
-Boo dagger bow
-Bos bow
-Smil sword
+Bamb Warrior sword
+Boo Warrior dagger
+Bos Arch bow dagger
+Bos Arch bow dagger
+Smil Healer treastaff

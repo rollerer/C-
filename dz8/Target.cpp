@@ -21,8 +21,8 @@ class Target
     public:
         int health;
         int shield;
-        std::string* debuffs {new std::string[20]};
-        std::string* buffs {new std::string[20]};
+        std::string* debuffs = new std::string[200];
+        std::string* buffs = new std::string[200];
         int size;
         int coord[2] = {0, 0};
         int FreeDebuff = 0;

@@ -86,13 +86,13 @@ class TreeStaff: public Weapons
     public:
     TreeStaff()
     {
-        heal = 10;
+        heal = 30;
         range = 8;
         delay = 10;
     }
     void ability(Target* t)
     {
-        t->health+= heal;
+        t->health += heal;
     }
 };
 
@@ -124,6 +124,7 @@ class Orks: public Target
     public:
     std::string name;
     Backpack* pack;
+    std::string type;
     int skill;
     void inf()
     {
@@ -143,7 +144,7 @@ class Orks: public Target
         pack->inf();
         std::cout<<"___________________________________\n";
     }
-    Orks(std::string n, int s, int h, int pr, int x, int y, Backpack* p)
+    Orks(std::string n, std::string t, int s, int h, int pr, int x, int y, Backpack* p)
     {
         name = n;
         pack = p;
@@ -151,6 +152,7 @@ class Orks: public Target
         skill = s;
         health = h;
         shield = pr;
+        type = t;
         coord[0] = x;
         coord[1] = y;
     }
@@ -200,4 +202,19 @@ Weapons* createWeap(std::string a)
         return new TreeStaff();
     }
 
+}
+
+Orks* findWeakestOrk(Orks** a, int ork)
+{   
+    int hp = a[0]->health;
+    Orks* ptr = a[0];
+    for(int i = 0; i < ork; i++)
+    {
+        if(a[i]->health < hp)
+        {
+            hp = a[i]->health;
+            ptr = a[i];
+        }
+    }
+    return ptr;
 }

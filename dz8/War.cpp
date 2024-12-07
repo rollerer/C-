@@ -47,7 +47,7 @@ void show(Wizard**a, Orks**b, int wiz, int ork)
                 {   
                     if(!flag)
                     {
-                        std::cout<<"m";
+                        std::cout<<"w";
                         flag = 1;
                     }
                 }
@@ -94,7 +94,7 @@ main()
 
     Orks** Orki = new Orks*[0];
     std::string name_ork = "";
-    std::string name_backpack = "";
+    std::string type_ork = "";
     int num_weap = 0;
     int ork = 0;
     int dead_ork = 0;
@@ -157,9 +157,9 @@ main()
         {
             std::stringstream str(s);
             str>>name_ork;
-            name_backpack = name_ork + "'s backpack";
+            str>>type_ork;
 
-            Orki[ork] = new Orks(name_ork, 1, 100, 20, x_ork*2, 10, new Backpack(new Weapons*[0], 0));
+            Orki[ork] = new Orks(name_ork, type_ork, 1, 100, 20, x_ork*2, 10, new Backpack(new Weapons*[0], 0));
             x_ork++;
             while(str>>d)
             {
@@ -176,11 +176,9 @@ main()
     int n;
     int tar_w = 0;
     int tar_o = 0;
-    Wizard* target_wiz = Wizards[tar_w];
-    Orks* target_ork = Orki[tar_o];
+    int arrows = 10;
     while(wiz!=dead_wiz and ork!=dead_ork)
     {   
-        target_wiz = Wizards[tar_w];
         for(int i = 0; i<wiz; i++)
         {
             try
@@ -206,12 +204,29 @@ main()
         {
             try
             {   
-                n = duel(Orki[i], target_wiz, 0);
-                if(n == 1)
+                if(Orki[i]->type == "Warrior")
                 {
-                    dead_wiz++;
-                    tar_w++;
-                    break;
+                    n = duel(Orki[i], Wizards[tar_w], 0);
+                    if(n == 1)
+                    {
+                        dead_wiz++;
+                        tar_w++;
+                        break;
+                    }
+                }
+                else if(Orki[i]->type == "Healer")
+                {
+                    Orki[i]->use(findWeakestOrk(Orki, ork), 0);
+                    std::cout<<"I healed\n";
+                }
+                else if(Orki[i]->type == "Arch")
+                {   
+                    if(arrows)
+                    {
+                        Orki[i]->use(Wizards[tar_w], 0);
+                        arrows-=1;
+                    }
+                    Orki[i]->use(Wizards[tar_w], 1);
                 }
             }
             catch(const char*)
