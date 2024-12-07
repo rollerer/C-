@@ -7,7 +7,7 @@ class Weapons
     int damage;
     int range;
     float delay;
-    int skill;
+    int skill = 0;
     std::string type;
     virtual void ability(Target*) = 0;
     void inf()
@@ -21,17 +21,18 @@ class Weapons
 class Melee: public Weapons
 {
     public:
-    Melee(std::string type)
-    {
-        if(type == "sword")
+    Melee(std::string t)
+    {   
+
+        if(t == "sword")
         {
             range = 2;
             damage = 5;
             delay = 2;
-            skill = 2;
+            skill = 1;
             type = "Sword";
         }
-        else if(type == "dagger")
+        else if(t == "dagger")
         {
             range = 1;
             damage = 3;
@@ -63,8 +64,19 @@ class Ranged: public Weapons
         type = "Bow";
     }
     void ability(Target* t)
-    {
+    {   
+        if(t->shield>damage)
+        {
+            t->shield-=damage;
+        }
+        else if(t->shield > 0)
+        {
+            t->health -= (damage - t->shield);
+        }
+        else
+        {
         t->health-=damage;
+        }
     }
 };
 
@@ -88,7 +100,6 @@ class TreeStaff: public Weapons
 class Backpack
 {
     std::string owner = "Unsigned";
-    int Weap = 0;
     void inf()
     {
         std::cout<<"Owner: "<<owner<<'\n';
@@ -98,6 +109,7 @@ class Backpack
         }
     }
     public:
+    int Weap = 0;
     Weapons** weap;
     Backpack(Weapons** w, int W)
     {
@@ -108,32 +120,51 @@ class Backpack
 };
 
 class Orks: public Target
-{
+{   
+    public:
     std::string name;
     Backpack* pack;
-    public:
     int skill;
     void inf()
     {
-        std::cout<<"Name: "<<name<<"\n";
+        std::cout<<"Name: "<<name<<'\n';
+        std::cout<<"health: "<<health<<'\n';
+        std::cout<<"shield: "<<shield<<'\n';
+        std::cout<<"Debuffs: \n";
+        for (int i = 0; i<FreeDebuff; i++)
+        {
+            std::cout<<debuffs[i];
+        }
+        std::cout<<"Buffs: \n";
+        for (int i = 0; i<FreeBuff; i++)
+        {
+            std::cout<<buffs[i];
+        }
         pack->inf();
+        std::cout<<"___________________________________\n";
     }
-    Orks(std::string n, Backpack* p)
+    Orks(std::string n, int s, int h, int pr, int x, int y, Backpack* p)
     {
         name = n;
         pack = p;
         pack->owner = name;
+        skill = s;
+        health = h;
+        shield = pr;
+        coord[0] = x;
+        coord[1] = y;
     }
     void use(Target* t, int i)
     {
         Weapons* weap = pack->weap[i];
         for(int k = 0; k<4; k++)
         {
-            if(dist(this, t) < weap->range)
+            if(dist(this, t) <= weap->range)
             {
                 if(weap->skill <= skill)
                 {
                     weap->ability(t);
+                    break;
                 }
                 else
                 {
@@ -143,10 +174,30 @@ class Orks: public Target
             else
             {   
                 move(this, t);
-                std::cout<<dist(this, t)<<'\n';
                 throw("");
             }
         }
     }
     friend class Backpack;
 };
+
+Weapons* createWeap(std::string a)
+{
+    if(a == "sword")
+    {
+        return new Melee(a);
+    }
+    else if(a == "dagger")
+    {
+        return new Melee(a);
+    }
+    else if(a == "bow")
+    {
+        return new Ranged();
+    }
+    else
+    {
+        return new TreeStaff();
+    }
+
+}

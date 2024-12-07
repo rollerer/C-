@@ -1,5 +1,9 @@
 #include <iostream>
 #include "Target.cpp"
+#define water 15
+#define water_dist 3
+#define fire 30
+#define fire_dist 1
 
 // заклинания аля Гарри Поттер[
 class Spell
@@ -8,9 +12,10 @@ class Spell
     int damage;
     int protect;
     int heal;
+    public:
     int level;
     virtual void ability(Target*) = 0;
-    public:
+    int dist = 0;
     void inf()
     {
         std::cout<<name;
@@ -20,42 +25,49 @@ class Spell
 class Attack: public Spell
 {   
     public:
-    Attack()
+    Attack(int d)
     {
         name = "Attack\n";
+        damage = d;
+        dist = 4;
     }
     void ability(Target* t)
     {
         t->debuffs[t->FreeDebuff] = "burning\n";
         t->FreeDebuff += 1;
-        t->health -= 18;
+        t->health -= damage;
     }
 };
 // защитные
 class Protect: public Spell
 {  
     public:
-    Protect()
+    Protect(int pr)
     {
         name = "Protect\n";
+        protect = pr;
+        dist = 3;
     }
     void ability(Target* t)
     {
         t->buffs[t->FreeBuff] = "protected\n";
         t->FreeBuff+=1;
+        t->shield+=protect;
     }
 };
 // бытовые
-class Household: public Spell
+class Heal: public Spell
 {   
     public:
-    Household()
+    Heal(int h)
     {
-        name = "Household\n";
+        name = "Heal\n";
+        heal = h;
+        dist = 3;
     }
     void ability(Target* t)
     {
-        std::cout<<"it is not a fight spell\n";
+        t->health+=heal;
     }
 };
 // непростительные
@@ -81,6 +93,7 @@ class Elements
 {   protected:
         int atack = 0;
         int protect = 0;
+        int dist = 0;
         std::string name;
     public:
         virtual void effect(Target* , int) = 0;
@@ -98,7 +111,8 @@ class Fire: public Elements
     }
     Fire()
     {   
-        atack = 10;
+        atack = fire;
+        dist = fire_dist;
         name = "fi";
     }
 };
@@ -115,7 +129,8 @@ class Water: public Elements
     Water()
     {
         name = "wa";
-        atack = 5;
+        atack = water;
+        dist = water_dist;
     }
 };
 
@@ -173,7 +188,10 @@ class NatureSpell
             elem = el;
             N = n;
             level = int(N/3)+1;
-            dist = N*3 + 1;
+            for(int i = 0; i<N; i++)
+            {
+                dist+=elem[i]->dist;   
+            }
         }
     NatureSpell()
         {
@@ -214,4 +232,27 @@ NatureSpell* createNSp(std::string s)
         }       
     }
     return new NatureSpell(m, s.length());
+}
+
+Spell* createHSp(std::string ad)
+{   
+    std::string n;
+    int num = 0;
+    n = ad[0];
+    if(n == "A")
+    {   
+        return new Attack(stoi(ad.substr(1)));
+    }
+    else if(n == "P")
+    {
+        return new Protect(stoi(ad.substr(1)));
+    }
+    else if(n == "H")
+    {
+        return new Heal(stoi(ad.substr(1)));
+    }
+    else
+    {
+        return new Unforgivable();
+    }
 }

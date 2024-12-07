@@ -1,6 +1,9 @@
 Spells
-Harry wfwfwf efef
-Gorge wefwfw
-Ron w
-Tom e
-Bob f
+Harry NatureSpells w wfwfwf efef HarrySpells A123
+Gorge NatureSpells wefwfw
+Ron NatureSpells w
+Tom NatureSpells e
+Bob NatureSpells f
+Orks
+Bamb sword bow
+Boo dagger bow

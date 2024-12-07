@@ -23,8 +23,8 @@ class Book
     {
         pages = 0;
         name = "";
-        Harry_spells = nullptr;
-        Nature_spells = nullptr;
+        Harry_spells = new Spell*[0];
+        Nature_spells = new NatureSpell*[0];
         Nat_Sp = 0;
         Har_Sp = 0;
     }
@@ -37,14 +37,14 @@ class Book
         Harry_spells = sp;
         Har_Sp = s;
     }
-    Book(std::string n, int p, Spell** sp, int s)
+    Book(std::string n, int p)
     {
         name = n;
         pages = p;
         Nature_spells = new NatureSpell*[0];
         Nat_Sp = 0;
-        Harry_spells = sp;
-        Har_Sp = s;
+        Harry_spells = new Spell*[0];
+        Har_Sp = 0;
     }
     void inf()
     {
@@ -116,7 +116,7 @@ class Wizard: public Target
         NatureSpell* sp = book->Nature_spells[num];
         for(int i = 0; i<4; i++)
         {
-            if(dist(this, t) < sp->dist)
+            if(dist(this, t) <= sp->dist)
             {
                 if(sp->level <= level)
                 {
@@ -131,13 +131,31 @@ class Wizard: public Target
             else
             {   
                 move(this, t);
-                std::cout<<dist(this, t)<<'\n';
             }
         }
         }
         else
         {
-
+            Spell* hsp = book->Harry_spells[num];
+            for(int i = 0; i<4; i++)
+            {
+                if(dist(this, t) <= hsp->dist)
+                {
+                    if(hsp->level <= level)
+                    {
+                        hsp->ability(t);
+                        break;
+                    }
+                    else
+                    {
+                        throw(1);
+                    }
+                }
+                else
+                {   
+                    move(this, t);
+                }
+            }
         }
     }
 };
