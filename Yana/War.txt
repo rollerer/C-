@@ -1,0 +1,10 @@
+Wizards
+Name 110 11
+Name23 20 200
+Book
+NatureSpells wffw feafe HarrySpells A P A A
+People
+Boris 100 30 Granate SubmachineGun
+Петя 30 20 Pistol AssaultRifle
+Monsters
+Monster 100 30 Speed
