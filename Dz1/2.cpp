@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 
+//функция печати
 template <typename T>
 void Print( const T& a, std::string n)
 {   
@@ -16,6 +17,7 @@ void Print( const T& a, std::string n)
     }
     std::cout<<'\n';
 }
+//перегрузка по умолчанию
 template <typename T>
 void Print( const T& a)
 {   
@@ -40,16 +42,16 @@ main()
     int n = 0;
     std::cin>>n;
     int j = 0;
-
+//ввод массива
     for(int i = 0; i<n; i++)
     {   
         std::cin>>j;
         data.push_back(j);
     }
-    Print(data, ",");
-    
+//разделение и сортировка
     for(int i : data)
     {
+//при положительных числах
         if (i>=0)
         {   
             if(data_pos.size() == 0)
@@ -67,10 +69,10 @@ main()
                     break;
                 }
             }
-            std::cout<<num<<"\n";
             data_pos.emplace(data_pos.begin() + num, i);
             }
         }
+//при отрицательных числах
         else
         {
             if(data_neg.size() == 0)
@@ -88,11 +90,11 @@ main()
                     break;
                 }
             }
-            std::cout<<num<<"\n";
             data_neg.emplace(data_neg.begin() + num, i);
             }
         }
     }
+//вывод
     Print(data_pos);
     Print(data_neg);
 }
