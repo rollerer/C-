@@ -10,7 +10,7 @@ void Print( const T& a, std::string n)
     {      
         std::cout<<i;
         if(ind < a.size()-1)
-        {
+        { 
             std::cout<<n<<" ";
         }
         ind++;
