@@ -1,6 +1,6 @@
 #include <iostream>
 #include <map>
-
+//создание класса 
 class Phone
 {
     std::map<std::string, std::string> m;
@@ -9,10 +9,12 @@ class Phone
     {
         m = {};
     }
+    //добавление контака
     void add(std::string a, std::string b)
     {
         m[a] = b;
     }
+    //вывод контактов
     void inf()
     {   
         if(m.size())
@@ -27,6 +29,7 @@ class Phone
             std::cout<<"Список пуст\n";
         }
     }
+    // поиск контакта
     void find(std::string name)
     {
         auto it = m.find(name);
@@ -39,6 +42,7 @@ class Phone
             std::cout<<"Такого контакта нет\n";
         }
     }
+    // удаление контакта
     void del(std::string name)
     {
         if(!m.erase(name))
@@ -55,6 +59,7 @@ int main()
     std::string name;
     std::string n;
     std::string number;
+    
     while(comand != "stop")
     {   
         std::cout<<"Выбери дейчтвие: добавить/удалить контакт(add/del); вывести список контактов(inf); найти контак(find)"<<'\n';

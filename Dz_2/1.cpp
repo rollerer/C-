@@ -77,9 +77,13 @@ int main()
         {
             dq.show();
         }
-        else
+        else if(comand == "1" or comand == "0")
         {
             dq.use(comand);
+        }
+        else
+        {
+            std::cout<<"Неизвестная команда\n";
         }
     }
 }
