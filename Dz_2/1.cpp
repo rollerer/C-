@@ -1,6 +1,7 @@
 #include <iostream>
 #include <deque>
 
+//класс очереди
 class DQ
 {
     std::deque<std::string*>m;
@@ -9,15 +10,17 @@ class DQ
     {
         m = {};
     }
+    //вывод информации
     void show()
     {   
         std::cout<<"Количество заданий: "<<m.size()<<'\n';
         std::cout<<"Задания: "<<'\n';
-        /*for(const std::string* i : m)
+        for(const std::string* i : m)
         {
             std::cout<<i[0]<<" "<<i[1]<<'\n';
-        }*/
+        }
     }
+    //добавление задания
     void add(std::string* a)
     {
         if(a[1] == "1" or a[1] == "high" or a[1] == "высокий")
@@ -29,6 +32,7 @@ class DQ
             m.emplace_back(a);
         }
     }
+    //выполнить задание
     void use(std::string pr)
     {   
         if(m.size())
@@ -44,6 +48,10 @@ class DQ
                 m.pop_back();
             }
         }
+        else
+        {
+            std::cout<<"В очереди нет задач"<<'\n';
+        }
     }
 
 };
@@ -55,9 +63,6 @@ int main()
     std::string check;
     std::string prior;
     std::string comand;
-    std::cout<<"Напиши задачу и её приоритет, через пробел"<<'\n';
-    std::cin>>check>>prior;
-    dq.add(new std::string[2]{check, prior});
     while(comand != "stop")
     {   
         std::cout<<"Выбери дейчтвие: добавить задание(add); выполнить задание высокого приоритета(1), низкого(0); узнать информацию о заданиях(inf)"<<'\n';
