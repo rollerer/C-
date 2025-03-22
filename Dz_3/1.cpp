@@ -17,6 +17,12 @@ class HTable
             table.push_back(a);
         }
     }
+    //деконструктор
+    ~HTable() {
+        for (auto& list : table) {
+            delete list; 
+        }
+    }
     //вывод хеш-таблицы
     void inf()
     {
