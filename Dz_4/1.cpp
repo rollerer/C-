@@ -3,10 +3,9 @@
 #include <random>
 #include <vector>
 #include <chrono>
+#include <algorithm>
 
-template <typename T>
-
-T sort_puz(T a)
+int* sort_puz(int* a,  int size)
 {   
     int i = 0;
     int flag = 1;
@@ -22,7 +21,7 @@ T sort_puz(T a)
             f = 1;
         }
         i++;
-        if(i == a.size()-1)
+        if(i == size-1)
         {
             i = 0;
             
@@ -36,21 +35,16 @@ T sort_puz(T a)
     
     return a;
 }
-template <typename T>
-void fu(T* b)
+void fu(int* a)
 {
-    std::vector<int>& a = *b;
-    a[1] = 10;
+    a[1] = 0;
 }
 
-template <typename T>
-T* sort_fast(T* b, int i, int j)
+
+int* sort_fast(int* a, int i, int j)
 {    
     int beg = i;
     int end = j;
-    std::vector<int>& a = *b;
-
-    //std::cout<<j<<'\n';
     int mid = a[int((end+beg)/2)];
     int t;
     int swap = 0;
@@ -75,46 +69,160 @@ T* sort_fast(T* b, int i, int j)
     }
     if(end-beg == 1)
     {
-        return &a;
+        return a;
     }
     if(j>beg)
     {   
-        sort_fast(&a, beg, j);
+        sort_fast(a, beg, j);
     }
     if(i<end)
     {   
-        sort_fast(&a, i, end);
+        sort_fast(a, i, end);
     }
-    return &a;
+    return a;
 }
 
+/*int* sort_con(int* a,int beg, int end)
+{
+    if(end-beg == 1)
+    {
+        return a;
+    }
+    int mid = int((end+beg)/2);
+    int c[end-beg];
+    std::cout<<beg<<'\n';
+    int* b_1 = sort_con(a, beg, mid);
+    int* b_2 = sort_con(a, mid, end);
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    while(i<mid-beg and j<end-mid)
+    {   
+        if(b_1[i]<b_2[j])
+        {
+            c[k] = b_1[i];
+            i++;
+            k++;
+        }
+        else
+        {
+            c[k] = b_2[j];
+            j++;
+            k++;
+        }
+    }
+    while(i<mid-beg)
+    {
+        c[k] = b_1[i];
+        i++;
+        k++;
+    }
+    while(j<end-mid)
+    {
+        c[k] = b_2[j];
+        j++;
+        k++;
+    }
+    return c;
+}*/
+
+template <typename T>
+T sort_con(T a)
+{
+    if(a.size() == 1)
+    {
+        return a;
+    }
+    int mid = int(a.size()/2);
+    T c;
+    T f(a.begin(), a.begin()+mid);
+    T d(a.begin()+mid, a.end());
+    T b_1 = sort_con(f);
+    T b_2 = sort_con(d);
+    int i = 0;
+    int j = 0;
+    while(i<b_1.size() and j<b_2.size())
+    {   
+        if(b_1[i]<b_2[j])
+        {
+            c.push_back(b_1[i]);
+            i++;
+        }
+        else
+        {
+            c.push_back(b_2[j]);
+            j++;
+        }
+    }
+    while(i<b_1.size())
+    {
+        c.push_back(b_1[i]);
+        i++;
+    }
+    while(j<b_2.size())
+    {
+        c.push_back(b_2[j]);
+        j++;
+    }
+    return c;
+}
+
+template <typename T>
+T sort_vst(T a)
+{
+    T u;
+    while(!a.empty())
+    {
+        int m = *std::min_element(a.begin(), a.end());
+        u.push_back(m);
+        a.erase(std::find(a.begin(), a.end(), m));
+    }
+    return u;
+}
 int main()
 {
     std::mt19937 gen(42);
     std::uniform_int_distribution<int> dist(1, 1000);
     std::vector<int> numbers_1000;
-    for (int i = 0; i < 10000; i++) {
-        numbers_1000.push_back(dist(gen));
+    int size = 10000;
+    int* m = new int[size];
+    int* n = new int[size];
+    for (int i = 0; i < size; i++) {
+        int num = dist(gen);
+        numbers_1000.push_back(num);
+        m[i] = num;
+        n[i] = num;
     }
-    std::vector<int>* num = &numbers_1000;
+    //sort_con(m, 0, size);
+    auto start_con = std::chrono::high_resolution_clock::now();
+    std::vector<int> g = sort_con(numbers_1000);
+    auto end_con = std::chrono::high_resolution_clock::now();
 
-    auto start_fast = std::chrono::high_resolution_clock::now();
-    sort_fast(num, 0, numbers_1000.size()-1);
-    auto end_fast = std::chrono::high_resolution_clock::now();
+    auto duration_con = std::chrono::duration_cast<std::chrono::microseconds>(end_con - start_con);
 
-    auto duration_fast = std::chrono::duration_cast<std::chrono::microseconds>(end_fast - start_fast);
+    auto start_vst= std::chrono::high_resolution_clock::now();
+    std::vector<int> k = sort_vst(numbers_1000);
+    auto end_vst = std::chrono::high_resolution_clock::now();
+
+    auto duration_vst = std::chrono::duration_cast<std::chrono::microseconds>(end_vst - start_vst);
 
     auto start_puz = std::chrono::high_resolution_clock::now();
-    sort_puz(numbers_1000);
+    sort_puz(m, size);
     auto end_puz = std::chrono::high_resolution_clock::now();
 
     auto duration_puz = std::chrono::duration_cast<std::chrono::microseconds>(end_puz - start_puz);
 
+    auto start_fast = std::chrono::high_resolution_clock::now();
+    sort_fast(n, 0, size);
+    auto end_fast = std::chrono::high_resolution_clock::now();
+
+    auto duration_fast = std::chrono::duration_cast<std::chrono::microseconds>(end_fast - start_fast);
+
     std::cout<<"Быстрая: "<<duration_fast.count()<<'\n';
     std::cout<<"Пузырьковая: "<<duration_puz.count()<<'\n';
-    /*for (int num : *n) 
-    {
-        std::cout << num << " ";
-    }*/
+    std::cout<<"Слияние: "<<duration_con.count()<<'\n';
+    std::cout<<"Вставки: "<<duration_vst.count()<<'\n';
+    
+
     return 0;
 }
