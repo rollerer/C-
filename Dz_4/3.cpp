@@ -128,7 +128,7 @@ int main()
 {
     std::mt19937 gen(42);
     std::uniform_int_distribution<int> dist(1, 1000);
-    int size = 100;
+    int size = 10;
     int s = 1000;
     int* m = new int[size]();
     int* n = new int[size]();
@@ -138,6 +138,7 @@ int main()
         m[i] = num;
     }
     int** k = new int*[s]();
+    //так как время одной сортировки мало, то я сделал её 1000 раз подряд
     for(int i=0; i<s; i++)
     {   
         k[i] = new int[size];
@@ -146,10 +147,11 @@ int main()
             k[i][j]=m[j];
         }
     }
+    //измерение времени выполнения
     auto start_vst = std::chrono::high_resolution_clock::now();
     for(int i = 0; i< s; i++)
     {
-        sort_mix(k[i], size);
+        sort_vst(k[i], size);
     }
     auto end_vst = std::chrono::high_resolution_clock::now();
 
