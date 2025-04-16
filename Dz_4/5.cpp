@@ -5,6 +5,7 @@
 #include <vector>
 #include <set>
 #include <fstream>
+#include <map>
 using namespace std;
 
 struct Node {
@@ -62,15 +63,15 @@ class REDBLACKTREE {
     }
   }
 
-  NodePtr SEARCHTREEHELPER(NodePtr node, int key) {
-    if (node == TNULL || key == node->Id) {
+  NodePtr SEARCHTREEHELPER(NodePtr node, std::string name) {
+    if (node == TNULL || name == node->name) {
       return node;
     }
 
-    if (key < node->Id) {
-      return SEARCHTREEHELPER(node->leftNode, key);
+    if (name < node->name) {
+      return SEARCHTREEHELPER(node->leftNode, name);
     }
-    return SEARCHTREEHELPER(node->rightNode, key);
+    return SEARCHTREEHELPER(node->rightNode, name);
   }
 
   // For balancing the tree after deletion
@@ -145,15 +146,15 @@ class REDBLACKTREE {
     v->parentNode = u->parentNode;
   }
 
-  void DELETENODEHELPER(NodePtr node, int key) {
+  void DELETENODEHELPER(NodePtr node, std::string name) {
     NodePtr z = TNULL;
     NodePtr x, y;
     while (node != TNULL) {
-      if (node->Id == key) {
+      if (node->name == name) {
         z = node;
       }
 
-      if (node->Id <= key) {
+      if (node->name <= name) {
         node = node->rightNode;
       } else {
         node = node->leftNode;
@@ -191,6 +192,7 @@ class REDBLACKTREE {
       y->NodeColor = z->NodeColor;
     }
     delete z;
+    size--;
     if (y_original_NodeColor == 0) {
       DELETEFIX(x);
     }
@@ -276,7 +278,7 @@ class REDBLACKTREE {
 
   void postorder() { POSTORDERHELPER(this->root); }
 
-  NodePtr searchTree(int k) { return SEARCHTREEHELPER(this->root, k); }
+  NodePtr searchTree(std::string k) { return SEARCHTREEHELPER(this->root, k); }
 
   NodePtr minimum(NodePtr node) {
     while (node->leftNode != TNULL) {
@@ -402,7 +404,7 @@ class REDBLACKTREE {
 
   NodePtr getRoot() { return this->root; }
 
-  void DELETENODE(int NodeData) { DELETENODEHELPER(this->root, NodeData); }
+  void DELETENODE(std::string NodeData) { DELETENODEHELPER(this->root, NodeData); }
 
 
   void printTree() {
@@ -421,7 +423,7 @@ class REDBLACKTREE {
       std::ofstream out_file("Librarry.txt");
       NodePtr x = root;
       NodePtr y;
-      std::set<int> ids;
+      std::set<int> ids = {};
       std::set<std::string> d;
       while(ids.size()< size)
       {   
@@ -430,26 +432,16 @@ class REDBLACKTREE {
               y = x;
               x = x->leftNode;
           }
-          if(ids.find(y->Id) == ids.end())
-          {
-              out_file<<"Name: "<<y->name<<"; Autor: "<<y->autor<<'\n';
-              std::cout<<"Name: "<<y->name<<"; Autor: "<<y->autor<<'\n';
-              ids.emplace(y->Id);
-              std::cout<<y->Id<<'\n';
-          }
           if(y!= root)
           {
             while(ids.find(y->Id) != ids.end())
             {
               y = y->parentNode;
             }    
-            out_file<<"Name: "<<y->name<<"; Autor: "<<y->autor<<'\n';
-            std::cout<<"Name: "<<y->name<<"; Autor: "<<y->autor<<'\n';
+            out_file<<"Id: "<<y->Id<< "; Name: "<<y->name<<"; Autor: "<<y->autor<<'\n';
             ids.emplace(y->Id);
-            std::cout<<y->Id<<'\n';
             x = y->rightNode;
           }
-          
       }
       out_file.close();
     }
@@ -463,14 +455,15 @@ int main() {
     std::string name;
     std::string autor;
     REDBLACKTREE LIBRARRY;
+    std::map<std::string, std::string> map;
 
     std::vector<std::string> alphabet = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
     std::vector<std::string> Alphabet = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
     std::mt19937 gen(42);
     std::uniform_int_distribution<int> let(0, alphabet.size()-1);
     std::uniform_int_distribution<int> word(3, 10);
-    int size = 10;
-    for (int i = 1; i < size+1; i++) 
+    int size = 10000;
+    for (int i = 0; i < size; i++) 
     {   
         name = Alphabet[let(gen)];
         autor = Alphabet[let(gen)];
@@ -482,9 +475,32 @@ int main() {
         {
             autor += alphabet[let(gen)];
         }
-        std::cout<<i<<'\n';
         LIBRARRY.INSERTNODE(i, autor, name);
+        map[name] = autor;
     }
-    LIBRARRY.printTree();
     LIBRARRY.writeTree();
+
+    auto start_tree_i = std::chrono::high_resolution_clock::now();
+    LIBRARRY.INSERTNODE(10001, "Mdsfd", "Klikli");
+    auto end_tree_i = std::chrono::high_resolution_clock::now();
+    auto duration_tree_i = std::chrono::duration_cast<std::chrono::microseconds>(end_tree_i - start_tree_i);
+
+    auto start_tree_f = std::chrono::high_resolution_clock::now();
+    LIBRARRY.searchTree("Klikli");
+    auto end_tree_f = std::chrono::high_resolution_clock::now();
+    auto duration_tree_f = std::chrono::duration_cast<std::chrono::microseconds>(end_tree_f - start_tree_f);
+
+    auto start_map_i = std::chrono::high_resolution_clock::now();
+    map["Klikli"] = "Mdsfd";
+    auto end_map_i = std::chrono::high_resolution_clock::now();
+    auto duration_map_i = std::chrono::duration_cast<std::chrono::microseconds>(end_map_i - start_map_i);
+
+    auto start_map_f = std::chrono::high_resolution_clock::now();
+    map.find("Klikli");
+    auto end_map_f = std::chrono::high_resolution_clock::now();
+    auto duration_map_f = std::chrono::duration_cast<std::chrono::microseconds>(end_map_f - start_map_f);
+
+    std::cout<<"Tree insert: "<<duration_tree_i.count() <<"; Tree find: "<<duration_tree_f.count()<<'\n';
+    std::cout<<"Map insert: "<<duration_map_i.count()<<"; Map find: "<<duration_map_f.count()<<'\n';
+
 }
