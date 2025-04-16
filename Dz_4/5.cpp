@@ -414,7 +414,7 @@ class REDBLACKTREE {
   }
 
 
-  
+  //функция вывода в файл
   void writeTree()
   {
     
@@ -456,7 +456,7 @@ int main() {
     std::string autor;
     REDBLACKTREE LIBRARRY;
     std::map<std::string, std::string> map;
-
+    //генерация слов
     std::vector<std::string> alphabet = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
     std::vector<std::string> Alphabet = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
     std::mt19937 gen(42);
@@ -479,7 +479,7 @@ int main() {
         map[name] = autor;
     }
     LIBRARRY.writeTree();
-
+    //измерение времени вставки и поиска для дерева и мапа
     auto start_tree_i = std::chrono::high_resolution_clock::now();
     LIBRARRY.INSERTNODE(10001, "Mdsfd", "Klikli");
     auto end_tree_i = std::chrono::high_resolution_clock::now();
@@ -500,6 +500,7 @@ int main() {
     auto end_map_f = std::chrono::high_resolution_clock::now();
     auto duration_map_f = std::chrono::duration_cast<std::chrono::microseconds>(end_map_f - start_map_f);
 
+    // времена близки, так что можно сказать что структура мапа - красно-черное дерево
     std::cout<<"Tree insert: "<<duration_tree_i.count() <<"; Tree find: "<<duration_tree_f.count()<<'\n';
     std::cout<<"Map insert: "<<duration_map_i.count()<<"; Map find: "<<duration_map_f.count()<<'\n';
 
