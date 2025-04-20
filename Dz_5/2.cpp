@@ -30,7 +30,7 @@ void Print( const T& a, std::string n)
 
 int main()
 {   
-    int size = 100;
+    int size = 10000;
     int all = size/5;
     std::vector<int> vec(size, 0);
     std::vector<std::thread> threads;
